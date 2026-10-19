@@ -23,10 +23,14 @@ jobs:
         with:
           node-version: 22
 
+      # Step 3: Install all the libraries the project needs.
+      # npm v11 blocks postinstall scripts by default, so we explicitly allow
+      # the ones we need (electron downloads its binary, esbuild its engine).
       - name: Install dependencies
-        run: |
-          npm install --no-fund --no-audit
-          npx install-scripts approve electron@31.7.7 esbuild@0.21.5 electron-winstaller@5.4.4
+        env:
+          # Let electron's postinstall fetch its Windows binary.
+          npm_config_allow_scripts: 'true'
+        run: npm install --no-fund --no-audit
 
       - name: Build the Squirrel.Windows installer
         run: npm run make:squirrel
