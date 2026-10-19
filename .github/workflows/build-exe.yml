@@ -1,1 +1,63 @@
+# ============================================================================
+#  HallwayLauncher Studio — build the Windows .exe installer on GitHub
+# ----------------------------------------------------------------------------
+#  You don't need a Windows machine. This workflow borrows one of GitHub's
+#  Windows computers for ~4 minutes, builds your installer, and gives it back
+#  to you as a downloadable file.
+# ===========================================================================
 
+name: Build Windows Installer
+
+# When this should run automatically:
+#   - On every push to the "main" branch
+#   - Anytime you manually click "Run workflow" in the Actions tab
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build .exe on Windows
+    runs-on: windows-latest
+    steps:
+      # Step 1: Copy your project files onto the Windows runner.
+      - name: Check out the project
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js (the JavaScript runtime).
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # Step 3: Install all the libraries the project needs.
+      # The second line lets Electron download its files (npm blocks that by default).
+      - name: Install dependencies
+        run: |
+          npm install --no-fund --no-audit
+          npx install-scripts approve electron@31.7.7 esbuild@0.21.5 electron-winstaller@5.4.4
+
+      # Step 4: Build the installer. This is the same command you'd run on your
+      # own Windows machine: `npm run make:squirrel`.
+      - name: Build the Squirrel.Windows installer
+        run: npm run make:squirrel
+
+      # Step 5: Show what got built (so you can see it in the run logs).
+      - name: Show generated artifacts
+        shell: pwsh
+        run: |
+          Write-Host "=== Artifacts in out/make/squirrel.win32/x64 ==="
+          Get-ChildItem -Recurse out/make/squirrel.win32/x64 | Select-Object FullName, Length
+
+      # Step 6: Package the installer up so you can download it from GitHub.
+      - name: Upload the .exe installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HallwayLauncherStudio-windows-exe
+          # The Setup.exe is what you double-click to install. We upload the
+          # whole folder so you also get the auto-update files.
+          path: out/make/squirrel.win32/x64/
+          if-no-files-found: error
+          retention-days: 30
