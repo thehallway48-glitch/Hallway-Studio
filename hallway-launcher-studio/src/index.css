@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ----------------------------------------------------------------------------
+   HallwayLauncher Studio — renderer global styles
+   Tailwind handles resets + utilities; the App.jsx STYLES block layers the
+   warm mint-paper theme on top. We just need a clean base here.
+---------------------------------------------------------------------------- */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #eaf5ee; /* pale mint paper — matches the app's --paper token */
+  color: #374151;
+  font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', system-ui, -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden; /* the app manages its own scroll regions */
+}
+
+/* Slim, theme-matched scrollbars for the renderer */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.25);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.45);
+}

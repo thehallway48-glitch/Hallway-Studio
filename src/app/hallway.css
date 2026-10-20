@@ -1,0 +1,432 @@
+/* ============================================================================
+   HallwayLauncher Studio — warm, hand-made, "cozy terminal" theme
+   Pale mint paper background · white cards · charcoal text · soft mint-green
+   accent · lavender watercolor bleed on card edges. A couple of tiny rotations
+   and inconsistent corner radii give it a beginner-made, comforting feel
+   without resorting to scrapbook props. Flattened (non-nested) CSS for max
+   processor compatibility; everything scoped under .hallway-root.
+   ========================================================================== */
+
+/* ---- Root block: CSS variables + direct layout (no nested rules) ---- */
+.hallway-root {
+  /* Palette */
+  --paper: #EAF5EE;            /* pale mint paper background */
+  --paper-2: #DFF1E6;          /* slightly deeper mint for sidebar */
+  --paper-warm: #F4F1E8;      /* warm cream wash for watercolor bleed */
+  --card: #FFFFFF;            /* white cards */
+  --card-soft: #FBFCFB;       /* off-white hover */
+  --ink: #1F2937;             /* charcoal headings */
+  --ink-2: #374151;           /* charcoal body */
+  --ink-3: #6B7280;           /* muted gray */
+  --ink-4: #9CA3AF;           /* faint gray */
+  --mint: #10B981;             /* mint-green accent (icons, active, ok) */
+  --mint-soft: #A7F3D0;        /* soft mint fills */
+  --mint-bg: #ECFDF5;         /* mint chip background */
+  --mint-bg-2: #D1FAE5;       /* mint button background */
+  --mint-border: #C8E6C9;     /* card border */
+  --lavender: #DDD6FE;        /* lavender wash */
+  --lavender-soft: #EDE9FE;   /* lavender bleed */
+  --coral: #FB7185;           /* warm coral for warn/error */
+  --amber: #F59E0B;           /* amber for the "busy" led */
+  --line: #E5E7EB;            /* hairline divider */
+
+  /* Layout */
+  position: relative;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  /* Subtle paper grain: two layered radial washes + a faint noise feel via gradient */
+  background-image:
+    radial-gradient(900px 600px at 8% -8%, rgba(167, 243, 208, 0.35), transparent 60%),
+    radial-gradient(900px 700px at 108% 108%, rgba(221, 214, 254, 0.30), transparent 55%),
+    radial-gradient(700px 500px at 60% 50%, rgba(244, 241, 232, 0.45), transparent 65%);
+  overflow: hidden;
+  color: var(--ink-2);
+  font-family: var(--font-jakarta), 'Plus Jakarta Sans', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+.hallway-root *,
+.hallway-root *::before,
+.hallway-root *::after { box-sizing: border-box; }
+
+/* ---- Ambient paper orbs (very soft, not neon) ---- */
+.hallway-root .orb { position: absolute; border-radius: 50%; filter: blur(70px); z-index: 0; pointer-events: none; opacity: 0.55; }
+.hallway-root .orb-a { width: 320px; height: 320px; background: rgba(167, 243, 208, 0.45); top: -90px; left: -70px; }
+.hallway-root .orb-b { width: 380px; height: 380px; background: rgba(221, 214, 254, 0.45); bottom: -120px; right: -100px; }
+.hallway-root .orb-c { width: 260px; height: 260px; background: rgba(244, 241, 232, 0.55); top: 38%; left: 42%; }
+.hallway-root .grid-overlay { display: none; }
+
+/* ---- Title bar (kept dark-ish so it still reads as window chrome, but softened) ---- */
+.hallway-root .titlebar {
+  position: relative; z-index: 5;
+  height: 44px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px 0 18px;
+  background: linear-gradient(180deg, #2C3E50, #34495E);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  color: #E5E7EB;
+}
+.hallway-root .titlebar-left { display: flex; align-items: center; gap: 14px; }
+.hallway-root .brand-mark {
+  width: 28px; height: 28px; border-radius: 9px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #A7F3D0, #34D399);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+.hallway-root .brand-icon { color: #FFFFFF; }
+.hallway-root .brand-text { display: flex; align-items: baseline; gap: 6px; letter-spacing: 0.3px; }
+.hallway-root .brand-name { font-weight: 700; color: #FFFFFF; font-size: 14px; }
+.hallway-root .brand-suffix { font-weight: 600; color: #6EE7B7; font-size: 11px; letter-spacing: 2px; }
+.hallway-root .brand-status { display: flex; align-items: center; gap: 6px; color: #CBD5E1; font-size: 11px; margin-left: 10px; }
+.hallway-root .brand-status .dot { width: 7px; height: 7px; border-radius: 50%; background: #34D399; box-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
+.hallway-root .titlebar-center { display: flex; align-items: center; gap: 6px; color: #94A3B8; font-size: 11px; }
+.hallway-root .crumb.active { color: #6EE7B7; }
+.hallway-root .titlebar-right { display: flex; gap: 6px; }
+.hallway-root .win-btn {
+  width: 28px; height: 26px; border-radius: 7px;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #CBD5E1; cursor: pointer; transition: all .18s ease;
+}
+.hallway-root .win-btn:hover { background: rgba(110, 231, 183, 0.18); color: #6EE7B7; border-color: rgba(110, 231, 183, 0.45); }
+.hallway-root .win-btn.close:hover { background: rgba(251, 113, 133, 0.20); color: #FDA4AF; border-color: rgba(251, 113, 133, 0.45); }
+
+/* ---- Shell ---- */
+.hallway-root .shell {
+  position: relative; z-index: 2;
+  flex: 1 1 0; min-height: 0;
+  display: grid; grid-template-columns: 260px 1fr;
+  gap: 18px; padding: 18px;
+  overflow: hidden;
+}
+
+/* ---- Nav (sidebar) — slightly deeper mint, soft border ---- */
+.hallway-root .nav {
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--paper-2);
+  border: 1px solid var(--mint-border);
+  box-shadow: 0 4px 18px rgba(31, 41, 55, 0.05);
+  overflow-y: auto;
+  min-height: 0;
+}
+.hallway-root .nav-section-title {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 10px; font-weight: 600;
+}
+.hallway-root .nav-grid { display: flex; flex-direction: column; gap: 8px; }
+.hallway-root .nav-tile {
+  position: relative; display: flex; align-items: center; gap: 10px;
+  padding: 11px 12px; border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  color: var(--ink-2); cursor: pointer; transition: all .2s ease;
+  text-align: left; overflow: hidden; width: 100%;
+  font-weight: 500;
+}
+.hallway-root .nav-tile:hover { border-color: var(--mint); background: var(--mint-bg); color: var(--ink); }
+.hallway-root .nav-tile.active {
+  color: var(--mint);
+  background: var(--mint-bg);
+  border-color: var(--mint);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+  font-weight: 600;
+}
+.hallway-root .nav-tile-icon { display: grid; place-items: center; color: var(--mint); }
+.hallway-root .nav-tile-label { font-size: 13px; }
+.hallway-root .nav-tile-glow {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--mint); border-radius: 0 3px 3px 0;
+  opacity: 0; transition: opacity .2s;
+}
+.hallway-root .nav-tile.active .nav-tile-glow { opacity: 1; }
+
+/* ---- Telemetry ---- */
+.hallway-root .telemetry { display: flex; flex-direction: column; gap: 12px; }
+.hallway-root .telemetry-head { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--ink-3); margin-bottom: 4px; letter-spacing: 0.5px; font-weight: 600; }
+.hallway-root .telemetry-head svg { color: var(--mint); }
+.hallway-root .telemetry-val { margin-left: auto; color: var(--ink); font-family: var(--font-jetbrains), var(--font-jetbrains), 'JetBrains Mono', 'Consolas', monospace; font-size: 11px; font-weight: 600; }
+.hallway-root .telemetry-bar { height: 6px; border-radius: 3px; background: #E5E7EB; overflow: hidden; }
+.hallway-root .telemetry-fill { height: 100%; background: linear-gradient(90deg, #6EE7B7, var(--mint)); transition: width .8s ease; }
+
+/* ---- Nav footer ---- */
+.hallway-root .nav-section.nav-footer { margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px dashed var(--mint-border); }
+.hallway-root .footer-stat { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--ink-3); }
+.hallway-root .footer-stat svg { color: var(--mint); }
+
+/* ---- Workspace ---- */
+.hallway-root .workspace { min-height: 0; overflow-y: auto; padding-right: 4px; }
+.hallway-root .panel-stack { display: flex; flex-direction: column; gap: 18px; }
+
+/* ---- Paper cards ---- */
+.hallway-root .card {
+  position: relative;
+  border-radius: 18px;
+  background: #FFFFFF;
+  border: 1px solid var(--mint-border);
+  box-shadow: 0 4px 20px rgba(31, 41, 55, 0.04);
+  padding: 24px;
+  overflow: hidden;
+  isolation: isolate; /* new stacking context so z-index layers below work */
+}
+/* Watercolor bleed — painted ON TOP of the white card, blended in. This is the
+   "handmade" signature. z-index 0 puts it above the card bg but below content
+   (which is z-index 1). mix-blend-mode: multiply tints the white instead of
+   hiding behind it. */
+.hallway-root .card::after {
+  content: ''; position: absolute; right: -30px; top: -30px; bottom: -30px; width: 55%;
+  background: linear-gradient(110deg, transparent 0%, rgba(221, 214, 254, 0.55) 50%, rgba(167, 243, 208, 0.45) 100%);
+  filter: blur(28px); pointer-events: none; z-index: 0; opacity: 0.9;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 50%);
+  mask-image: linear-gradient(to right, transparent, black 50%);
+}
+.hallway-root .card > * { position: relative; z-index: 1; }
+/* Faint top-left corner wash, also blended */
+.hallway-root .card::before {
+  content: ''; position: absolute; left: 0; top: 0; width: 60%; height: 75%;
+  background: radial-gradient(circle at top left, rgba(167, 243, 208, 0.4), transparent 70%);
+  pointer-events: none; z-index: 0; border-radius: 18px;
+  mix-blend-mode: multiply; opacity: 0.7;
+}
+.hallway-root .card-hero { padding: 26px; }
+.hallway-root .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+.hallway-root .card-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mint); margin-bottom: 8px; font-weight: 600; }
+.hallway-root .card-title { font-size: 26px; font-weight: 700; color: var(--ink); margin: 0 0 6px; letter-spacing: -0.5px; }
+.hallway-root .card-title-sm { font-size: 17px; font-weight: 700; color: var(--ink); margin: 0; }
+.hallway-root .card-sub { color: var(--ink-3); font-size: 13px; line-height: 1.55; margin: 0; max-width: 640px; }
+.hallway-root .inline-neon { color: var(--mint); font-weight: 600; }
+.hallway-root .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; background: #DCFCE7; border: 1px solid #BBF7D0; color: #166534; font-size: 11px; font-weight: 600; transform: rotate(-1.5deg); box-shadow: 0 2px 8px rgba(22, 101, 52, 0.08); }
+.hallway-root .hero-badge svg { color: var(--mint); }
+.hallway-root .card-head-meta { display: flex; gap: 8px; }
+.hallway-root .pill { padding: 4px 10px; border-radius: 999px; font-size: 10px; letter-spacing: 1px; background: #F3F4F6; border: 1px solid #E5E7EB; color: var(--ink-3); font-weight: 600; }
+.hallway-root .pill-busy { background: #FEF3C7; border-color: #FDE68A; color: #92400E; box-shadow: none; }
+
+/* ---- Status blocks ---- */
+.hallway-root .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.hallway-root .status-block {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; border-radius: 14px;
+  background: var(--card);
+  border: 1.5px solid var(--mint-border);
+}
+.hallway-root .status-block.neon {
+  border-color: var(--mint);
+  background: var(--mint-bg);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.10);
+}
+/* Human error #1: the middle column has a slightly different radius — feels hand-set */
+.hallway-root .status-block:nth-child(3n+2) { border-radius: 12px 16px 14px 18px; }
+.hallway-root .status-block-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--mint-bg); border: 1px solid var(--mint-border); color: var(--mint); flex-shrink: 0; }
+.hallway-root .status-block-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.hallway-root .status-block-value { font-size: 15px; font-weight: 700; color: var(--ink); font-family: var(--font-jetbrains), 'JetBrains Mono', 'Consolas', monospace; word-break: break-all; }
+
+/* ---- Action grid ---- */
+.hallway-root .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.hallway-root .action-node {
+  position: relative; display: flex; align-items: center; gap: 12px;
+  padding: 14px; border-radius: 14px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  color: var(--ink-2); cursor: pointer; transition: all .2s ease; text-align: left;
+  width: 100%;
+}
+.hallway-root .action-node:hover { border-color: var(--mint); background: var(--mint-bg); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12); }
+.hallway-root .action-node:disabled { opacity: 0.55; cursor: not-allowed; }
+.hallway-root .action-node-icon { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--mint-bg); border: 1px solid var(--mint-border); color: var(--mint); flex-shrink: 0; }
+.hallway-root .action-node-body { min-width: 0; flex: 1; }
+.hallway-root .action-node-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.hallway-root .action-node-desc { font-size: 11px; color: var(--ink-3); font-family: var(--font-jetbrains), 'JetBrains Mono', 'Consolas', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hallway-root .action-node-arrow { color: var(--ink-4); flex-shrink: 0; }
+
+/* Human error #2: the very first secondary action (Quick Connect) is nudged 2px down — beginner alignment */
+.hallway-root .action-node:nth-of-type(2) { transform: translateY(2px); }
+.hallway-root .action-node:nth-of-type(2):hover { transform: translateY(1px); }
+
+.hallway-root .action-primary {
+  grid-column: span 4;
+  padding: 18px 16px;
+  background: var(--mint-bg-2);
+  border: 1.5px solid var(--mint);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.18);
+}
+.hallway-root .action-primary:hover { background: var(--mint-bg-2); border-color: var(--mint); box-shadow: 0 8px 30px rgba(16, 185, 129, 0.25); }
+.hallway-root .action-primary .action-node-icon { width: 46px; height: 46px; background: #FFFFFF; border-color: var(--mint); box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2); }
+.hallway-root .action-primary .action-node-title { font-size: 16px; color: var(--mint); font-weight: 700; }
+.hallway-root .action-primary .action-node-desc { color: var(--ink-3); }
+
+/* ---- Progress ring ---- */
+.hallway-root .progress-ring { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
+.hallway-root .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.hallway-root .ring-bg { fill: none; stroke: #E5E7EB; stroke-width: 3; }
+.hallway-root .ring-fg { fill: none; stroke: var(--mint); stroke-width: 3; stroke-linecap: round; transition: stroke-dasharray .2s; }
+
+/* ---- Terminal preview ---- */
+.hallway-root .card-terminal-preview .terminal { height: 220px; }
+.hallway-root .ghost-link { display: inline-flex; align-items: center; gap: 3px; background: none; border: none; color: var(--mint); cursor: pointer; font-size: 12px; padding: 0; font-weight: 600; }
+.hallway-root .ghost-link:hover { text-decoration: underline; }
+
+/* ---- Config fields ---- */
+.hallway-root .field-row { display: flex; flex-direction: column; gap: 8px; }
+.hallway-root .field-label { font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.hallway-root .field-input {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  color: var(--ink); font-size: 14px; font-family: var(--font-jetbrains), 'JetBrains Mono', 'Consolas', monospace;
+  outline: none; transition: all .18s ease;
+}
+.hallway-root .field-input:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+
+/* ---- Version grid ---- */
+.hallway-root .version-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.hallway-root .version-tile {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 12px; border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  cursor: pointer; transition: all .18s ease; text-align: left;
+}
+.hallway-root .version-tile:hover { border-color: var(--mint); background: var(--mint-bg); }
+.hallway-root .version-tile.active { border-color: var(--mint); background: var(--mint-bg); box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15); }
+.hallway-root .version-tile-id { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--ink); }
+.hallway-root .version-tile-label { font-size: 11px; color: var(--ink-3); }
+.hallway-root .version-tag { align-self: flex-start; font-size: 9px; letter-spacing: 1px; padding: 2px 6px; border-radius: 4px; background: var(--mint-bg); color: var(--mint); border: 1px solid var(--mint-border); margin-top: 2px; font-weight: 600; }
+.hallway-root .tag-modded { background: var(--lavender-soft); color: #6D28D9; border-color: var(--lavender); }
+.hallway-root .tag-classic { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+
+/* ---- RAM slider ---- */
+.hallway-root .ram-track { display: flex; flex-direction: column; gap: 14px; }
+.hallway-root .ram-slider {
+  width: 100%; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, #6EE7B7, var(--mint)); outline: none; cursor: pointer;
+}
+.hallway-root .ram-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; border: 2.5px solid var(--mint); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25); cursor: pointer; }
+.hallway-root .ram-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; border: 2.5px solid var(--mint); cursor: pointer; }
+.hallway-root .ram-ticks { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.hallway-root .ram-tick { padding: 6px 0; border-radius: 8px; background: var(--card); border: 1px solid var(--line); color: var(--ink-3); font-size: 11px; cursor: pointer; transition: all .15s; font-family: monospace; font-weight: 600; }
+.hallway-root .ram-tick:hover { color: var(--ink); border-color: var(--mint); }
+.hallway-root .ram-tick.active { background: var(--mint-bg); border-color: var(--mint); color: var(--mint); }
+
+/* ---- Resolution grid ---- */
+.hallway-root .resolution-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.hallway-root .res-tile { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 12px; background: var(--card); border: 1.5px solid var(--line); cursor: pointer; transition: all .18s; text-align: left; }
+.hallway-root .res-tile:hover { border-color: var(--mint); background: var(--mint-bg); }
+.hallway-root .res-tile.active { border-color: var(--mint); background: var(--mint-bg); box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15); }
+.hallway-root .res-tile-head { display: flex; align-items: center; gap: 6px; color: var(--ink); font-size: 13px; font-weight: 700; font-family: monospace; }
+.hallway-root .res-tile-head svg { color: var(--mint); }
+.hallway-root .res-tile-desc { font-size: 11px; color: var(--ink-3); }
+
+/* ---- Terminal (kept dark — a cozy terminal, not neon) ---- */
+.hallway-root .terminal {
+  background: #1E293B;
+  border: 1.5px solid #334155;
+  border-radius: 12px;
+  padding: 14px 16px;
+  height: 460px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+  font-size: 12.5px; line-height: 1.65;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.25);
+  color: #E2E8F0;
+}
+.hallway-root .terminal.compact { height: 220px; }
+.hallway-root .terminal::-webkit-scrollbar { width: 8px; }
+.hallway-root .terminal::-webkit-scrollbar-track { background: transparent; }
+.hallway-root .terminal::-webkit-scrollbar-thumb { background: rgba(110, 231, 183, 0.3); border-radius: 4px; }
+.hallway-root .terminal-line { display: flex; gap: 10px; align-items: baseline; white-space: pre-wrap; word-break: break-word; }
+.hallway-root .terminal-prompt { color: #94A3B8; margin-bottom: 6px; border-bottom: 1px dashed rgba(110, 231, 183, 0.2); padding-bottom: 6px; }
+.hallway-root .t-prompt { color: #6EE7B7; }
+.hallway-root .t-sep { color: #64748B; }
+.hallway-root .t-path { color: #C4B5FD; }
+.hallway-root .t-cmd { color: #F1F5F9; }
+.hallway-root .t-ts { color: #64748B; font-size: 11px; flex-shrink: 0; }
+.hallway-root .t-tag { font-size: 10px; padding: 1px 5px; border-radius: 4px; flex-shrink: 0; font-weight: 600; letter-spacing: 1px; }
+.hallway-root .t-msg { color: #E2E8F0; }
+.hallway-root .t-info .t-tag { background: rgba(110, 231, 183, 0.15); color: #6EE7B7; }
+.hallway-root .t-info .t-msg { color: #CBD5E1; }
+.hallway-root .t-ok .t-tag { background: rgba(110, 231, 183, 0.2); color: #34D399; }
+.hallway-root .t-ok .t-msg { color: #6EE7B7; }
+.hallway-root .t-warn .t-tag { background: rgba(245, 158, 11, 0.18); color: #FCD34D; }
+.hallway-root .t-warn .t-msg { color: #FDE68A; }
+.hallway-root .t-error .t-tag { background: rgba(251, 113, 133, 0.18); color: #FDA4AF; }
+.hallway-root .t-error .t-msg { color: #FECDD3; }
+.hallway-root .t-cmd .t-tag { background: rgba(196, 181, 253, 0.18); color: #C4B5FD; }
+.hallway-root .t-cmd .t-msg { color: #DDD6FE; }
+.hallway-root .t-muted { color: #64748B; font-style: italic; }
+
+.hallway-root .terminal-toolbar { display: flex; gap: 8px; }
+.hallway-root .term-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 9px; background: var(--mint-bg); border: 1px solid var(--mint-border); color: var(--mint); font-size: 12px; cursor: pointer; transition: all .15s; font-weight: 600; }
+.hallway-root .term-btn:hover { background: var(--mint-bg-2); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15); }
+.hallway-root .term-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.hallway-root .card-terminal-full { padding: 22px; }
+
+/* ---- Sticky status strip footer — soft, homey ---- */
+.hallway-root .statusstrip {
+  position: relative; z-index: 5;
+  height: 34px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+  background: linear-gradient(0deg, var(--paper-2), var(--paper));
+  border-top: 1px solid var(--mint-border);
+  font-size: 11px; color: var(--ink-3);
+  flex-shrink: 0;
+}
+.hallway-root .statusstrip-left,
+.hallway-root .statusstrip-center,
+.hallway-root .statusstrip-right { display: flex; align-items: center; gap: 8px; }
+.hallway-root .status-led { width: 8px; height: 8px; border-radius: 50%; }
+.hallway-root .led-idle { background: var(--mint); box-shadow: 0 0 8px rgba(16, 185, 129, 0.45); }
+.hallway-root .led-busy { background: var(--amber); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); animation: hallway-pulse 1s infinite; }
+.hallway-root .statusstrip .mono { font-family: 'JetBrains Mono', monospace; color: var(--ink-2); }
+.hallway-root .sep { color: var(--ink-4); }
+
+.hallway-root .spin { animation: hallway-spin 1s linear infinite; }
+@keyframes hallway-spin { to { transform: rotate(360deg); } }
+@keyframes hallway-pulse { 50% { opacity: 0.4; } }
+
+/* ---- Scrollbars ---- */
+.hallway-root .nav::-webkit-scrollbar,
+.hallway-root .workspace::-webkit-scrollbar { width: 8px; }
+.hallway-root .nav::-webkit-scrollbar-track,
+.hallway-root .workspace::-webkit-scrollbar-track { background: transparent; }
+.hallway-root .nav::-webkit-scrollbar-thumb,
+.hallway-root .workspace::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.25); border-radius: 4px; }
+.hallway-root .nav::-webkit-scrollbar-thumb:hover,
+.hallway-root .workspace::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.45); }
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .hallway-root .shell { grid-template-columns: 220px 1fr; }
+  .hallway-root .action-grid { grid-template-columns: repeat(2, 1fr); }
+  .hallway-root .action-primary { grid-column: span 2; }
+  .hallway-root .status-grid { grid-template-columns: repeat(2, 1fr); }
+  .hallway-root .version-grid,
+  .hallway-root .resolution-grid { grid-template-columns: repeat(2, 1fr); }
+  .hallway-root .ram-ticks { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 760px) {
+  .hallway-root { height: auto; min-height: 100vh; overflow: visible; }
+  .hallway-root .shell { grid-template-columns: 1fr; padding: 12px; gap: 12px; overflow: visible; }
+  .hallway-root .nav { flex-direction: row; flex-wrap: wrap; gap: 10px; padding: 12px; overflow: visible; }
+  .hallway-root .nav-grid { flex-direction: row; flex-wrap: wrap; }
+  .hallway-root .nav-section-title { width: 100%; }
+  .hallway-root .telemetry { flex: 1 1 200px; min-width: 200px; }
+  .hallway-root .nav-section.nav-footer { flex-direction: row; width: 100%; border-top: none; padding-top: 0; }
+  .hallway-root .status-grid { grid-template-columns: 1fr; }
+  .hallway-root .action-grid { grid-template-columns: 1fr; }
+  .hallway-root .action-primary { grid-column: span 1; }
+  .hallway-root .version-grid,
+  .hallway-root .resolution-grid { grid-template-columns: 1fr 1fr; }
+  .hallway-root .titlebar-center { display: none; }
+  .hallway-root .workspace { overflow: visible; }
+  /* disable the human-error nudges on mobile so the stacked layout stays clean */
+  .hallway-root .action-node:nth-of-type(2) { transform: none; }
+  .hallway-root .status-block:nth-child(3n+2) { border-radius: 14px; }
+}

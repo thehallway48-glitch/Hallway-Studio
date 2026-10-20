@@ -1,0 +1,118 @@
+{
+  "name": "hallway-launcher-studio",
+  "productName": "HallwayLauncher Studio",
+  "version": "1.0.0",
+  "description": "A warm, hand-made-feeling desktop client wrapper for portablemc. Built on Electron + React + Vite with a cozy mint-paper interface.",
+  "main": ".vite/build/main.js",
+  "author": "HallwayLauncher Studio Team",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
+    "vite": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "make:zip": "electron-forge make --makers @electron-forge/maker-zip",
+    "make:squirrel": "electron-forge make --makers @electron-forge/maker-squirrel"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.5.0",
+    "@electron-forge/maker-squirrel": "^7.5.0",
+    "@electron-forge/maker-zip": "^7.5.0",
+    "@electron-forge/plugin-vite": "^7.5.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.0",
+    "lucide-react": "^0.408.0",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.3.4",
+    "wait-on": "^7.2.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "name": "HallwayLauncherStudio",
+        "executableName": "HallwayLauncherStudio",
+        "icon": "./build/icon.ico",
+        "asar": true,
+        "appBundleId": "studio.hallwaylauncher.app",
+        "win32metadata": {
+          "CompanyName": "HallwayLauncher Studio",
+          "ProductName": "HallwayLauncher Studio",
+          "FileDescription": "HallwayLauncher Studio Desktop Game Client",
+          "OriginalFilename": "HallwayLauncherStudio.exe"
+        }
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "platforms": ["win32"],
+          "config": {
+            "name": "HallwayLauncherStudio",
+            "title": "HallwayLauncher Studio",
+            "setupIcon": "./build/icon.ico",
+            "loadingGif": "./build/loading.gif",
+            "authors": "HallwayLauncher Studio Team",
+            "owners": "HallwayLauncher Studio Team",
+            "description": "HallwayLauncher Studio Desktop Game Client",
+            "packageRepository": false,
+            "noMsi": true,
+            "remoteReleases": false,
+            "createDesktopIcon": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "HallwayLauncher Studio",
+            "outDirectory": "./out/make/squirrel/win32/x64",
+            "arch": "x64"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": ["darwin", "linux", "win32"],
+          "config": {
+            "outDirectory": "./out/make/zip"
+          }
+        }
+      ],
+      "plugins": [
+        {
+          "name": "@electron-forge/plugin-vite",
+          "config": {
+            "build": [
+              {
+                "entry": "src/main.js",
+                "config": "vite.main.config.js"
+              },
+              {
+                "entry": "src/preload.js",
+                "config": "vite.preload.config.js"
+              }
+            ],
+            "renderer": [
+              {
+                "name": "main_window",
+                "html": "./index.html",
+                "js": "./src/main.jsx",
+                "preload": {
+                  "js": "./src/preload.js",
+                  "config": "vite.preload.config.js"
+                },
+                "config": "vite.renderer.config.js"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
